@@ -229,9 +229,40 @@ export function flat<T>(arr: T[], vol: number = 1): T[] {
   return result;
 }
 
-export function fill<T, K>(
-  arr: T[],
-  val: K | K[],
-  start?: number,
-  end?: number
-) {}
+export function fill<T>(arr: T[], val: T, start?: number, end?: number): T[] {
+  let length = arr.length;
+  let startIndex =
+    start === undefined
+      ? 0
+      : start < 0
+      ? Math.max(length + start, 0)
+      : Math.min(start, length);
+  let endIndex =
+    end === undefined
+      ? length
+      : end < 0
+      ? Math.max(length + end, 0)
+      : Math.min(end, length);
+  for (let i = startIndex; i < endIndex; i++) {
+    arr[i] = val;
+  }
+  // let temp: T[] = [];
+  // for (let i = 0; i < begin; i++) {
+  //   temp.push(arr[i]);
+  // }
+  // for (
+  //   let numberOfIteractions = 0;
+  //   numberOfIteractions < endIndex - begin;
+  //   numberOfIteractions++
+  // ) {
+  //   temp.push(val);
+  // }
+  // for (let i = endIndex; i < length; i++) {
+  //   temp.push(arr[i]);
+  // }
+  // arr.length = 0;
+  // for (let i = 0; i < temp.length; i++) {
+  //   arr.push(temp[i]);
+  // }
+  return arr;
+}
