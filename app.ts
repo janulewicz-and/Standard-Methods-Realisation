@@ -1,6 +1,6 @@
 const arr = [1, 1, 23, 65, 454, 423];
 
-export function mapRelease<T, K>(
+export function map<T, K>(
   arr: T[],
   callback: (item: T, index: number, arr: T[]) => K
 ): K[] {
@@ -11,7 +11,7 @@ export function mapRelease<T, K>(
   return result;
 }
 
-export function forEachRelease<T>(
+export function forEach<T>(
   arr: T[],
   callback: (element: T, index: number, arr: T[]) => void
 ): void {
@@ -20,7 +20,7 @@ export function forEachRelease<T>(
   }
 }
 
-export function filterRelease<T>(
+export function filter<T>(
   arr: T[],
   callback: (item: T, index: number, arr: T[]) => boolean
 ): T[] {
@@ -33,7 +33,7 @@ export function filterRelease<T>(
   return result;
 }
 
-export function findRelease<T>(
+export function find<T>(
   arr: T[],
   callback: (item: T, index: number, arr: T[]) => boolean
 ): T | undefined {
@@ -45,7 +45,7 @@ export function findRelease<T>(
   return undefined;
 }
 
-export function findIndexRelease<T>(
+export function findIndex<T>(
   arr: T[],
   callback: (item: T, index: number, arr: T[]) => boolean
 ): number | undefined {
@@ -57,7 +57,7 @@ export function findIndexRelease<T>(
   return undefined;
 }
 
-export function someRelease<T>(
+export function some<T>(
   arr: T[],
   callback: (item: T, index: number, arr: T[]) => boolean
 ): boolean {
@@ -69,7 +69,7 @@ export function someRelease<T>(
   return false;
 }
 
-export function everyRelease<T>(
+export function every<T>(
   arr: T[],
   callback: (item: T, index: number, arr: T[]) => boolean
 ): boolean {
@@ -81,7 +81,7 @@ export function everyRelease<T>(
   return true;
 }
 
-export function includesRelease<T>(arr: T[], item: T): boolean {
+export function includes<T>(arr: T[], item: T): boolean {
   for (let i: number = 0; i < arr.length; i++) {
     if (item === arr[i]) {
       return true;
@@ -90,7 +90,7 @@ export function includesRelease<T>(arr: T[], item: T): boolean {
   return false;
 }
 
-export function indexOfRelease<T>(arr: T[], item: T): number | undefined {
+export function indexOf<T>(arr: T[], item: T): number | undefined {
   for (let i: number = 0; i < arr.length; i++) {
     if (arr[i] === item) {
       return i;
@@ -99,7 +99,7 @@ export function indexOfRelease<T>(arr: T[], item: T): number | undefined {
   return undefined;
 }
 
-export function lastIndexOfRelease<T>(arr: T[], item: T): number | undefined {
+export function lastIndexOf<T>(arr: T[], item: T): number | undefined {
   for (let i: number = arr.length - 1; i > 0; i--) {
     if (arr[i] === item) {
       return i;
@@ -108,42 +108,43 @@ export function lastIndexOfRelease<T>(arr: T[], item: T): number | undefined {
   return undefined;
 }
 
-export function reduceRelease<T, K>(
+export function reduce<T, K>(
   arr: T[],
   callback: (acc: K, item: T, index: number, arr: T[]) => K,
-  initialValue: K
+  initialValue?: K
 ): K {
-  let acc = initialValue;
-  for (let i: number = 0; i < arr.length; i++) {
+  let acc: K;
+  let startIndex: number;
+  if (initialValue !== undefined) {
+    acc = initialValue;
+    startIndex = 0;
+  } else {
+    acc = arr[0];
+    startIndex = 1;
+  }
+  for (let i = startIndex; i < arr.length; i++) {
     acc = callback(acc, arr[i], i, arr);
   }
   return acc;
 }
-arr.concat();
 
-export function concatRelease<T>(arr: T[], ...values: (T | T[])[]): T[] {
-  let result: T[] = [];
-  for (let i: number = 0; i < arr.length; i++) {
-    result.push(arr[i]);
-  }
-  for (let k: number = 0; k < values.length; k++) {
-    let value = values[k];
-    if (Array.isArray(value)) {
-      for (let j: number = 0; j < value.length; j++) {
-        result.push(value[j]);
+export function concat<T>(arr: T[], ...args: (T | T[])[]): T[] {
+  let result: T[] = [...arr];
+
+  for (let k: number = 0; k < args.length; k++) {
+    let arg = args[k];
+    if (Array.isArray(arg)) {
+      for (let argIndex: number = 0; argIndex < arg.length; argIndex++) {
+        result.push(arg[argIndex]);
       }
     } else {
-      result.push(value);
+      result.push(arg);
     }
   }
   return result;
 }
 
-export function sliceRelease<T>(
-  arr: T[],
-  start: number = 0,
-  end?: number
-): T[] {
+export function slice<T>(arr: T[], start: number = 0, end?: number): T[] {
   let result: T[] = [];
   let from =
     start < 0 ? Math.max(arr.length + start, 0) : Math.min(start, arr.length);
@@ -154,42 +155,44 @@ export function sliceRelease<T>(
       ? Math.max(arr.length + end, 0)
       : Math.min(arr.length, end);
   if (from >= to) return [];
-  if (to > arr.length) {
-    to = arr.length;
-  }
   for (let i: number = from; i < to; i++) {
     result.push(arr[i]);
   }
   return result;
 }
 
-export function spliceReales<T>(
+export function splice<T>(
   arr: T[],
   start: number,
   deleteCount?: number,
-  ...volume: T[]
+  ...args: T[]
 ): T[] {
-  if (start < 0) start = Math.max(arr.length + start, 0);
-  else start = Math.min(start, arr.length);
+  let copyOfStart: number = start;
+  let copyOfDeleteCount = deleteCount;
+  if (start < 0) copyOfStart = Math.max(arr.length + start, 0);
+  else copyOfStart = Math.min(copyOfStart, arr.length);
 
-  if (deleteCount === undefined) {
-    deleteCount = arr.length - start;
+  if (copyOfDeleteCount === undefined) {
+    copyOfDeleteCount = arr.length - start;
   } else {
-    deleteCount = Math.min(Math.max(deleteCount, 0), arr.length - start);
+    copyOfDeleteCount = Math.min(
+      Math.max(copyOfDeleteCount, 0),
+      arr.length - start
+    );
   }
   let removed: T[] = [];
-  for (let i: number = start; i < start + deleteCount; i++) {
+  for (let i: number = copyOfStart; i < copyOfStart + copyOfDeleteCount; i++) {
     removed.push(arr[i]);
   }
-  let begin: T[] = sliceRelease(arr, 0, start);
-  let midle: T[] = sliceRelease(arr, start + deleteCount);
-  let newArray = [...begin, ...volume, ...midle];
+  let begin: T[] = slice(arr, 0, copyOfStart);
+  let midle: T[] = slice(arr, copyOfStart + copyOfDeleteCount);
+  let newArray = [...begin, ...args, ...midle];
   arr.length = 0;
   arr.push(...newArray);
   return removed;
 }
 
-export function joinRelease<T>(arr: T[], separator: string = ","): string {
+export function join<T>(arr: T[], separator: string = ","): string {
   let result: string = "";
   for (let i = 0; i < arr.length; i++) {
     if (i > 0) result += separator;
@@ -198,10 +201,34 @@ export function joinRelease<T>(arr: T[], separator: string = ","): string {
   return result;
 }
 
-export function reverseRelease<T>(arr: T[]): T[] {
+export function reverse<T>(arr: T[]): T[] {
   let result: T[] = [];
   for (let i = arr.length - 1; i > 0; i--) {
     result.push(arr[i]);
   }
   return result;
 }
+
+export function flat<T>(arr: T[], vol: number = 1): T[] {
+  let result: any[] = arr;
+  for (let i = 0; i < vol; i++) {
+    let temp: any[] = [];
+    for (let j = 0; j < result.length; i++) {
+      const el = result[j];
+      if (Array.isArray(el)) {
+        temp = concat(temp, el);
+      } else {
+        temp.push(el);
+      }
+    }
+    result = temp;
+  }
+  return result;
+}
+
+export function fill<T, K>(
+  arr: T[],
+  val: K | K[],
+  start?: number,
+  end?: number
+) {}
