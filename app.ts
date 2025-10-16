@@ -131,8 +131,8 @@ export function reduce<T, K>(
 export function concat<T>(arr: T[], ...args: (T | T[])[]): T[] {
   let result: T[] = [...arr];
 
-  for (let k: number = 0; k < args.length; k++) {
-    let arg = args[k];
+  for (let argOfArray = 0; argOfArray < args.length; argOfArray++) {
+    let arg = args[argOfArray];
     if (Array.isArray(arg)) {
       for (let argIndex: number = 0; argIndex < arg.length; argIndex++) {
         result.push(arg[argIndex]);
