@@ -184,11 +184,14 @@ export function splice<T>(
   for (let i: number = copyOfStart; i < copyOfStart + copyOfDeleteCount; i++) {
     removed.push(arr[i]);
   }
-  let begin: T[] = slice(arr, 0, copyOfStart);
-  let midle: T[] = slice(arr, copyOfStart + copyOfDeleteCount);
-  let newArray = [...begin, ...args, ...midle];
   arr.length = 0;
-  arr.push(...newArray);
+  arr.push(
+    ...[
+      ...slice(arr, 0, start),
+      ...args,
+      ...slice(arr, start + copyOfDeleteCount),
+    ]
+  );
   return removed;
 }
 
